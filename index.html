@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Catalyst</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+        }
+        main {
+            padding: 20px;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button.search-button,
+        button.add-button,
+        button.visit-button,
+        button.terms-button {
+            background-color: #007bff;
+            color: #fff;
+        }
+        button.search-button:hover,
+        button.add-button:hover,
+        button.visit-button:hover,
+        button.terms-button:hover {
+            background-color: #0056b3;
+        }
+        .button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .button-container button {
+            margin-left: 10px;
+        }
+        #searchResults {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .search-result {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            margin: 10px;
+            width: calc(50% - 20px); 
+            border-radius: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; 
+        }
+        .search-result h2 {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .search-result p {
+            margin: 10px 0;
+        }
+        .report-button-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        button.report-button {
+            background-color: #ff5050;
+            color: #fff;
+            margin-left: 10px;
+        }
+        button.report-button:hover {
+            background-color: #ff3333;
+	}
+        button.visit-button {
+            background-color: #007bff;
+            color: #fff;
+            margin-top: 10px;
+        }
+        button.visit-button:hover {
+            background-color: #0056b3;
+        }
+
+        
+        @media only screen and (max-width: 600px) {
+            .button-container {
+                position: static;
+                margin-top: 20px;
+            }
+            .button-container button {
+                margin-left: 0;
+                margin-right: 10px;
+            }
+            .search-result {
+                width: calc(100% - 20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Movie Catalyst</h1>
+    </header>
+    <main>
+        <div class="button-container">
+            <button class="add-button" onclick="location.href='add.html'">Add</button>
+            <button class="terms-button" onclick="location.href='termsofservice.html'">Terms of Service</button>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button class="search-button" onclick="search()">Search</button>
+        </div>
+        <div id="searchResults"></div>
+    </main>
+    <script>
+        function search() {
+            const searchInput = document.getElementById('searchInput').value;
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/search', {
+                method: 'GET',
+                headers: {
+                    'query': searchInput
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const searchResultsDiv = document.getElementById('searchResults');
+                searchResultsDiv.innerHTML = '';
+                data.forEach(result => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.classList.add('search-result');
+                    resultDiv.innerHTML = `
+                        <h2>${result.title}</h2>
+                        <p>${result.link}</p>
+                        <div class="report-button-container">
+                            <button class="report-button" onclick="report('${result.link}')">Report</button>
+                        </div>
+                        <button class="visit-button" onclick="window.location.href='${result.link}'">Download</button>
+                    `;
+                    searchResultsDiv.appendChild(resultDiv);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function report(link) {
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/report', {
+                method: 'GET',
+                headers: {
+                    'link': link
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Failed to report');
+                }
+            })
+            .then(data => {
+                if (data === 'reportspam') {
+                    alert('Please do not spam reports!');
+                } else {
+                    alert('Reported successfully');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
+
