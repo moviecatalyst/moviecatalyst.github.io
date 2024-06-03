@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #login-section, #admin-section {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #controls {
+            margin-bottom: 20px;
+        }
+
+        #controls label, #controls input, #controls button {
+            margin-right: 10px;
+        }
+
+        #items-container .item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        #items-container .item-buttons button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-section">
+        <h2>Admin Login</h2>
+        <form id="login-form">
+            <label for="adminname">Admin Name:</label>
+            <input type="text" id="adminname" name="adminname" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="login-message"></div>
+    </div>
+
+    <div id="admin-section" style="display:none;">
+        <h2>Admin Panel</h2>
+        <div id="controls">
+            <label for="size-limit">Size Limit [MB] :</label>
+            <input type="number" id="size-limit" name="size-limit">
+            <button onclick="setSizeLimit()">Set Size Limit</button>
+            <label for="moderate-toggle">Moderate:</label>
+            <input type="checkbox" id="moderate-toggle" onchange="toggleModerate()">
+            <label for="shutdown-toggle">Shutdown:</label>
+            <input type="checkbox" id="shutdown-toggle" onchange="toggleShutdown()">
+        </div>
+        <div id="items-container"></div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/verify', {
+                method: 'POST',
+                headers: {
+                    'adminname': adminname,
+                    'password': password
+                }
+            })
+            .then(response => response.text())
+            .then(text => {
+                if (text === 'success') {
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                    fetchItems(adminname, password);
+                } else {
+                    document.getElementById('login-message').innerText = 'Login failed!';
+                }
+            });
+        });
+
+        function fetchItems(adminname, password) {
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/results', {
+                headers: {
+                    'adminname': adminname,
+                    'password': password
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('items-container');
+                container.innerHTML = '';
+                data.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+                    itemDiv.innerHTML = `
+                        <p>ID: ${item.id}</p>
+                        <p>URL: ${item.details.url}</p>
+                        <p>Name: ${item.details.name}</p>
+                        <p>Size: ${item.details.size}</p>
+                        <p>Hash: ${item.details.hash}</p>
+                        <p>IP: ${item.details.ip}</p>
+                        <div class="item-buttons">
+                            <button onclick="banFile('${item.id}')">Ban File</button>
+                            <button onclick="banIP('${item.details.ip}')">Ban IP</button>
+                            <button onclick="approve('${item.id}')">Approve</button>
+                            <button onclick="ignore('${item.id}')">Ignore</button>
+                        </div>
+                    `;
+                    container.appendChild(itemDiv);
+                });
+            });
+        }
+
+        function setSizeLimit() {
+            const size = document.getElementById('size-limit').value;
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/sizelimit', {
+                method: 'POST',
+                headers: {
+                    'size': size,
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function toggleModerate() {
+            const moderate = document.getElementById('moderate-toggle').checked;
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch(`https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/${moderate ? 'moderate_on' : 'moderate_off'}`, {
+                method: 'POST',
+                headers: {
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function toggleShutdown() {
+            const shutdown = document.getElementById('shutdown-toggle').checked;
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch(`https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/${shutdown ? 'shutdown_on' : 'shutdown_off'}`, {
+                method: 'POST',
+                headers: {
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function banFile(id) {
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/banfile', {
+                method: 'POST',
+                headers: {
+                    'id': id,
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function banIP(ip) {
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/banip', {
+                method: 'POST',
+                headers: {
+                    'ip': ip,
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function approve(id) {
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/approve', {
+                method: 'POST',
+                headers: {
+                    'id': id,
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+
+        function ignore(id) {
+            const adminname = document.getElementById('adminname').value;
+            const password = document.getElementById('password').value;
+
+            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/ignore', {
+                method: 'POST',
+                headers: {
+                    'id': id,
+                    'adminname': adminname,
+                    'password': password
+                }
+            });
+        }
+    </script>
+</body>
+</html>
