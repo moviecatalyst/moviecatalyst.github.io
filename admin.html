@@ -77,7 +77,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/verify', {
+            fetch('https://1234gds.pythonanywhere.com/verify', {
                 method: 'POST',
                 headers: {
                     'adminname': adminname,
@@ -97,7 +97,7 @@
         });
 
         function fetchItems(adminname, password) {
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/results', {
+            fetch('https://1234gds.pythonanywhere.com/results', {
                 headers: {
                     'adminname': adminname,
                     'password': password
@@ -134,7 +134,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/sizelimit', {
+            fetch('https://1234gds.pythonanywhere.com/sizelimit', {
                 method: 'POST',
                 headers: {
                     'size': size,
@@ -149,7 +149,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch(`https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/${moderate ? 'moderate_on' : 'moderate_off'}`, {
+            fetch(`https://1234gds.pythonanywhere.com/${moderate ? 'moderate_on' : 'moderate_off'}`, {
                 method: 'POST',
                 headers: {
                     'adminname': adminname,
@@ -163,7 +163,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch(`https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/${shutdown ? 'shutdown_on' : 'shutdown_off'}`, {
+            fetch(`https://1234gds.pythonanywhere.com/${shutdown ? 'shutdown_on' : 'shutdown_off'}`, {
                 method: 'POST',
                 headers: {
                     'adminname': adminname,
@@ -176,7 +176,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/banfile', {
+            fetch('https://1234gds.pythonanywhere.com/banfile', {
                 method: 'POST',
                 headers: {
                     'id': id,
@@ -190,7 +190,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/banip', {
+            fetch('https://1234gds.pythonanywhere.com/banip', {
                 method: 'POST',
                 headers: {
                     'ip': ip,
@@ -204,7 +204,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/approve', {
+            fetch('https://1234gds.pythonanywhere.com/approve', {
                 method: 'POST',
                 headers: {
                     'id': id,
@@ -218,7 +218,7 @@
             const adminname = document.getElementById('adminname').value;
             const password = document.getElementById('password').value;
 
-            fetch('https://e97a53bc-e4f1-4438-9090-5b8a57a55e42-00-3fqjcgalzi1aj.janeway.replit.dev/ignore', {
+            fetch('https://1234gds.pythonanywhere.com/ignore', {
                 method: 'POST',
                 headers: {
                     'id': id,
